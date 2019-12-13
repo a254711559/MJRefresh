@@ -69,7 +69,7 @@ static NSBundle *bundle = nil;
     return [[NSBundle mainBundle] localizedStringForKey:key value:value table:nil];
 }
 
-+ (void)changeLanguage{
++ (void)mj_changeLanguage{
     //切换语音 得把bundle 清空
     bundle = nil;
 }
