@@ -10,6 +10,9 @@
 #import "MJRefreshComponent.h"
 
 @implementation NSBundle (MJRefresh)
+
+static NSBundle *bundle = nil;
+
 + (instancetype)mj_refreshBundle
 {
     static NSBundle *refreshBundle = nil;
@@ -36,20 +39,27 @@
 
 + (NSString *)mj_localizedStringForKey:(NSString *)key value:(NSString *)value
 {
-    static NSBundle *bundle = nil;
     if (bundle == nil) {
         // （iOS获取的语言字符串比较不稳定）目前框架只处理en、zh-Hans、zh-Hant三种情况，其他按照系统默认处理
         NSString *language = [NSLocale preferredLanguages].firstObject;
-        if ([language hasPrefix:@"en"]) {
-            language = @"en";
-        } else if ([language hasPrefix:@"zh"]) {
-            if ([language rangeOfString:@"Hans"].location != NSNotFound) {
-                language = @"zh-Hans"; // 简体中文
-            } else { // zh-Hant\zh-HK\zh-TW
-                language = @"zh-Hant"; // 繁體中文
+        NSInteger languageType = [[NSUserDefaults standardUserDefaults] integerForKey:@"LanguageTypeKey"];
+        //系统预设
+        if (languageType <= 1) {
+            if ([language hasPrefix:@"en"]) {
+                language = @"en";
+            } else if ([language hasPrefix:@"zh"]) {
+                if ([language rangeOfString:@"Hans"].location != NSNotFound) {
+                    language = @"zh-Hans"; // 简体中文
+                } else { // zh-Hant\zh-HK\zh-TW
+                    language = @"zh-Hant"; // 繁體中文
+                }
+            } else {
+                language = @"en";
             }
-        } else {
-            language = @"en";
+        }else if (languageType == 2) {
+            language = @"zh-Hans"; // 简体中文
+        }else if (languageType == 3){
+            language = @"en"; // 简体中文
         }
         
         // 从MJRefresh.bundle中查找资源
@@ -57,5 +67,10 @@
     }
     value = [bundle localizedStringForKey:key value:value table:nil];
     return [[NSBundle mainBundle] localizedStringForKey:key value:value table:nil];
+}
+
++ (void)changeLanguage{
+    //切换语音 得把bundle 清空
+    bundle = nil;
 }
 @end

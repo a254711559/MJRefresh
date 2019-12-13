@@ -13,4 +13,5 @@
 + (UIImage *)mj_arrowImage;
 + (NSString *)mj_localizedStringForKey:(NSString *)key value:(NSString *)value;
 + (NSString *)mj_localizedStringForKey:(NSString *)key;
++ (void)changeLanguage;
 @end
